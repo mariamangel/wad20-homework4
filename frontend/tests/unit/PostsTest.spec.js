@@ -2,6 +2,7 @@ import {mount, createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import Posts from "../../src/components/Posts.vue";
+import moment from "moment";
 
 const localVue = createLocalVue();
 
@@ -103,4 +104,27 @@ describe('Posts', () => {
     it('1 == 1', function () {
         expect(true).toBe(true)
     });
+
+    it('renders the correct amount of posts', () => {
+        const posts = wrapper.findAll('.post');
+        expect(posts.length).toEqual(testData.length);
+    })
+
+    it('renders correctly media property', () => {
+        const posts = wrapper.findAll('.post')
+        let post1 = posts.at(0);
+        expect(post1.find('.post-image').find('img').exists()).toBe(true)
+
+        let post2 = posts.at(1);
+        expect(post2.find('.post-image').exists()).toBe(false)
+
+        let post3 = posts.at(2);
+        expect(post3.find('.post-image').find('video').exists()).toBe(true)
+    })
+    it('testing if post create time is displayed in correct format', () => {
+        const posts = wrapper.findAll('.post');
+        let post = posts.at(1).get('.post-author').findAll('small').at(1).text();
+        const expected = moment(testData[1].createTime).format('LLLL')
+        expect(post).toEqual(expected)
+    })
 });
